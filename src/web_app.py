@@ -1,10 +1,9 @@
-"""streamlit 每发送一条消息都会从头到尾执行一次这个文件"""
 import logging
 import os
-from pathlib import Path
 
 import streamlit as st
 
+import main.apps_shared as shared
 from main.query_rag import MyChat
 
 logging.basicConfig(level=logging.INFO)
@@ -13,18 +12,28 @@ logger = logging.getLogger(__name__)
 
 class MyStreamlitApp:
     """Streamlit 应用程序类"""
+
     def __init__(self):
         """初始化聊天机器人"""
         if "DASHSCOPE_API_KEY" not in os.environ:
             logger.error("未找到 DASHSCOPE_API_KEY，请设置环境变量或在 .env 文件中配置")
-            raise EnvironmentError("DASHSCOPE_API_KEY not found in environment variables")
-        
-        store_path = Path(__file__).parent.parent / "tmp" / "vector_store"
+            raise EnvironmentError(
+                "DASHSCOPE_API_KEY not found in environment variables"
+            )
+
+        store_path = shared.STORE_PATH
         if not store_path.exists():
-            logger.error("未找到向量存储路径 %s，请先运行 vetor_store.py 进行数据加载", store_path)
+            logger.error(
+                "未找到向量存储路径 %s，请先运行 vetor_store.py 进行数据加载",
+                store_path,
+            )
             raise FileNotFoundError(f"Vector store path {store_path} not found")
         logger.info("## vetor_store path: %s", store_path)
-        self.chatbot = MyChat(os.environ["DASHSCOPE_API_KEY"], str(store_path))
+        self.chatbot = MyChat(
+            os.environ["DASHSCOPE_API_KEY"],
+            store_path.resolve(),
+            embeddings_model=shared.EMBEDDINGS_MODEL,
+        )
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
         logger.info("## app started")
@@ -48,7 +57,6 @@ class MyStreamlitApp:
         if user_input:
             self.handle_query(user_input)
 
-
     def handle_query(self, user_input):
         """处理用户查询"""
         # 显示用户消息
@@ -61,6 +69,7 @@ class MyStreamlitApp:
                 response = self.chatbot.query(user_input)
                 st.markdown(response)
                 st.session_state.chat_history.append(("assistant", response))
+
 
 APP = MyStreamlitApp()
 # bash: streamlit run src/web_app.py config .streamlit/config.toml

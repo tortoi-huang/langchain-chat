@@ -1,4 +1,5 @@
 import logging
+from typing import TypeVar
 import os
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_huggingface import HuggingFaceEmbeddings
 
 logger = logging.getLogger(__name__)
+T = TypeVar("T")
 
 class MyChat:
     """基于向量数据库和通义千问模型的RAG问答系统"""
@@ -28,7 +30,7 @@ class MyChat:
         embeddings = HuggingFaceEmbeddings(model_name=embeddings_model)
         logger.info("## embeddings_model: %s", embeddings_model)
         # vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
-        vectorstore = Chroma(persist_directory=vetor_store, embedding_function=embeddings)
+        self.vectorstore = Chroma(persist_directory=vetor_store, embedding_function=embeddings)
 
         # 2. 设置 RAG 链
         self.llm = ChatTongyi(model=model, api_key=api_key)  # 使用 Qwen-Max 模型
@@ -40,10 +42,14 @@ class MyChat:
 问题：{question}"""
         prompt = PromptTemplate.from_template(template)
         # 创建检索器，
-        retriever = vectorstore.as_retriever(
+        retriever = self.vectorstore.as_retriever(
             search_type="similarity", # “相似性搜索”（cosine similarity，余弦相似度
             search_kwargs={"k": 5},   # 表示返回 top-5 个最相似的文档片段（chunks）
             )
+        
+        def chan_logger(d: T) -> T:
+            logger.info("## RAG链参数：%s", d)
+            return d
 
         # 下面竖线"|"是langchain定义的管道操作符，与unix一致，前面函数的输出放到后面函数的输入
         # 当调用 rag_chain.invoke("my quest") 时，retriever 查询 "my quest" 得到相关文档列表 docs, 然后调用lambda处理，封装成一个dict，并传递给prompt函数
@@ -53,6 +59,7 @@ class MyChat:
                 "question": RunnablePassthrough()
             }
             | prompt
+            | chan_logger
             | self.llm
             | StrOutputParser()
         )
