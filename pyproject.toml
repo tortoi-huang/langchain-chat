@@ -1,0 +1,21 @@
+[project]
+name = "yh-fin"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "chromadb>=1.0.21",
+    "dashscope>=1.24.5",
+    "groq>=0.31.1",
+    "langchain>=0.3.27",
+    "langchain-chroma>=0.2.6",
+    "langchain-community>=0.3.29",
+    "langchain-groq>=0.3.8",
+    "langchain-huggingface>=0.3.1",
+    "langchain-openai>=0.3.33",
+    "markdown>=3.9",
+    "sentence-transformers>=5.1.0",
+    "streamlit>=1.49.1",
+    "unstructured[md]>=0.18.14",
+]
