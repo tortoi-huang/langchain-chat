@@ -3,8 +3,8 @@ import os
 
 import streamlit as st
 
-import main.apps_shared as shared
-from main.query_rag import MyChat
+import langchain_chat.app_config.app_config as app_config
+from langchain_chat.main.query_rag import MyChat
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class MyStreamlitApp:
                 "DASHSCOPE_API_KEY not found in environment variables"
             )
 
-        store_path = shared.STORE_PATH
+        store_path = app_config.STORE_PATH
         if not store_path.exists():
             logger.error(
                 "未找到向量存储路径 %s，请先运行 vetor_store.py 进行数据加载",
@@ -32,7 +32,7 @@ class MyStreamlitApp:
         self.chatbot = MyChat(
             os.environ["DASHSCOPE_API_KEY"],
             store_path.resolve(),
-            embeddings_model=shared.EMBEDDINGS_MODEL,
+            embeddings_model=app_config.EMBEDDINGS_MODEL,
         )
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []

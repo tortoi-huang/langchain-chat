@@ -10,6 +10,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_huggingface import HuggingFaceEmbeddings
+import langchain_chat.app_config.app_config as app_config
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T")
@@ -89,12 +90,11 @@ if __name__ == "__main__":
         print("错误：未找到 DASHSCOPE_API_KEY，请设置环境变量或在 .env 文件中配置")
         exit(1)
     
-    STORE_PATH = Path(__file__).parent.parent.parent / "tmp" / "vector_store"
-    if not STORE_PATH.exists():
-        print(f"错误：未找到向量存储路径 {STORE_PATH}，请先运行 vetor_store.py 进行数据加载")
+    if not app_config.STORE_PATH.exists():
+        print(f"错误：未找到向量存储路径 {app_config.STORE_PATH}，请先运行 vetor_store.py 进行数据加载")
         exit(1)
-    print("## vetor_store path: ", STORE_PATH)
-    chat = MyChat(os.environ["DASHSCOPE_API_KEY"], str(STORE_PATH))
+    print("## vetor_store path: ", app_config.STORE_PATH)
+    chat = MyChat(os.environ["DASHSCOPE_API_KEY"], str(app_config.STORE_PATH))
     while True:
         cli_question = input("请输入您的问题（输入 '退出' 或 'quit' 退出）：")
         if cli_question.lower() in ["退出", "quit"]:

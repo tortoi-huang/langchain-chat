@@ -58,7 +58,7 @@ def load(
             chunks.extend(text_splitter.split_documents([chunk]))
     logger.info("## file has chunked")
 
-    # 3. 嵌入和向量存储
+    # 3. 嵌入和向量存储，这里需要到huggingFace下载模型，确保网络通常
     embeddings = HuggingFaceEmbeddings(model_name=model_name)
 
     vectorstore = Chroma.from_documents(

@@ -1,5 +1,6 @@
 [project]
-name = "yh-fin"
+# 这里对应包目录名为 src/langchain_chat
+name = "langchain-chat"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -20,3 +21,17 @@ dependencies = [
     "streamlit>=1.49.1",
     "unstructured[md]>=0.18.14",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+]
+
+
+[project.scripts]
+# load2vetor = "load2vetor:load"
+
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"

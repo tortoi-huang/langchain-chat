@@ -7,19 +7,25 @@ add:
 - cmmi_doc2txt.ipynb: 将word, excel, pdf转换为文本
 # 启动web
 
+## streamlit ui
 配置 .streamlit\config.toml
 ```bash
 # streamlit 每发送一条消息都会从头到尾执行一次src/web_app.py, 对于初始化代码需要使用单例模式
-export DASHSCOPE_API_KEY="sk-5a0c9680ce1948e2b4c4a533325b6c36"
-# $env:DASHSCOPE_API_KEY="sk-5a0c9680ce1948e2b4c4a533325b6c36"
+export DASHSCOPE_API_KEY="api key"
+# $env:DASHSCOPE_API_KEY="api key"
 # 启动web服务
-# streamlit run src/web_app.py config .streamlit/config.toml
-uvicorn pydantic_web:app --host 0.0.0.0 --port 8000 --reload
+streamlit run src/langchain_chat/web_app.py config .streamlit/config.toml
+```
+打开浏览器: http://localhost:8080/
+
+## web api 服务
+
+```bash
+export DASHSCOPE_API_KEY="api key"
+uvicorn langchain_chat.pydantic_web:app --host 0.0.0.0 --port 8000 --reload
 
 curl -X POST -H "Content-Type: application/json" -d '{"message": "你好,请问EPG的职责是什么？"}' http://localhost:8000/chat
 ```
-
-打开浏览器: http://localhost:8080/
 
 # streamlit
 streamlit 是一个简单的单用户 ai聊天web框架，
@@ -45,6 +51,19 @@ uv add langchain_groq
 
 # 添加开发时使用的包，多个包名用空格分开
 uv add --dev pytest mypy
+
+# uv首次运行uv sync时会固定依赖版本到uv.lock上, 更新依赖最新版本并更新uv.lock
+uv sync --upgrade
+
+# 运行脚本
+uv run .\src\langchain_chat\load2vetor.py
 ```
 
+
+# Hugging Face 镜像
+Hugging Face可能被墙，无法下载模型，需要配置镜像地址
+```sh
+export HF_ENDPOINT=https://hf-mirror.com
+# $env:HF_ENDPOINT="https://hf-mirror.com"
+```
 

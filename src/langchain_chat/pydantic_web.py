@@ -6,8 +6,8 @@ from fastapi import FastAPI, HTTPException
 from langchain.memory import ConversationBufferMemory
 from pydantic import BaseModel
 
-import main.apps_shared as shared
-from main.query_rag import MyChat
+import langchain_chat.app_config.app_config as app_config
+from langchain_chat.main.query_rag import MyChat
 
 app = FastAPI(title="RAG Chatbot with Qwen-Plus", version="1.0")
 
@@ -16,8 +16,8 @@ sessions = {}
 
 chatbot = MyChat(
     os.environ["DASHSCOPE_API_KEY"],
-    shared.STORE_PATH.resolve(),
-    embeddings_model=shared.EMBEDDINGS_MODEL,
+    app_config.STORE_PATH.resolve(),
+    embeddings_model=app_config.EMBEDDINGS_MODEL,
 )
 
 
