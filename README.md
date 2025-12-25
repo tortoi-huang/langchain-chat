@@ -8,13 +8,15 @@ add:
 # 启动web
 
 ## streamlit ui
+streamlit 是一个简单的单用户 ai聊天web框架，主要使用在快速使用纯python开发demo，避免引入复杂的前端框架
+
 配置 .streamlit\config.toml
 ```bash
 # streamlit 每发送一条消息都会从头到尾执行一次src/web_app.py, 对于初始化代码需要使用单例模式
 export DASHSCOPE_API_KEY="api key"
 # $env:DASHSCOPE_API_KEY="api key"
 # 启动web服务
-streamlit run src/langchain_chat/web_app.py config .streamlit/config.toml
+streamlit run src/langchain_chat/web_app.py --config .streamlit/config.toml
 ```
 打开浏览器: http://localhost:8080/
 
@@ -26,9 +28,6 @@ uvicorn langchain_chat.pydantic_web:app --host 0.0.0.0 --port 8000 --reload
 
 curl -X POST -H "Content-Type: application/json" -d '{"message": "你好,请问EPG的职责是什么？"}' http://localhost:8000/chat
 ```
-
-# streamlit
-streamlit 是一个简单的单用户 ai聊天web框架，
 
 # Chroma 向量数据库
 Chroma 是一个向量数据库，可以存储向量数据，并提供向量相似度查询接口, 这里使用langchain_chroma 来实现。
