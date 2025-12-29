@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def get_chat_client():
     """"""
     import langchain_chat.app_config.app_config as app_config
-    from langchain_chat.main.query_rag import MyChat
+    from langchain_chat.main.chat_agent import MyChat
 
     if "DASHSCOPE_API_KEY" not in os.environ:
         logger.error("未找到 DASHSCOPE_API_KEY，请设置环境变量或在 .env 文件中配置")

@@ -1,7 +1,6 @@
 import logging
 from typing import TypeVar
 import os
-from pathlib import Path
 
 from langchain_chroma import Chroma
 from langchain_community.chat_models.tongyi import ChatTongyi
@@ -16,6 +15,7 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T")
 
 class MyChat:
+
     """基于向量数据库和通义千问模型的RAG问答系统"""
     def __init__(
             self,
@@ -49,7 +49,7 @@ class MyChat:
             )
         
         def chan_logger(d: T) -> T:
-            logger.info("## RAG链参数：%s", d)
+            logger.info("## RAG链参数: %s", d)
             return d
 
         # 下面竖线"|"是langchain定义的管道操作符，与unix一致，前面函数的输出放到后面函数的输入
@@ -83,6 +83,8 @@ class MyChat:
             # print(r.content, end='')
             answer += str(r.content)
         return answer
+    def count_store_item(self):
+        return self.vectorstore._collection.count()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
